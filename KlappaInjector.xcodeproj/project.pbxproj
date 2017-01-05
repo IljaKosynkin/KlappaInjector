@@ -7,9 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5F5D1DB71E12876200098840 /* KLPInjector.h in Headers */ = {isa = PBXBuildFile; fileRef = 5F5D1DB61E12876200098840 /* KLPInjector.h */; };
+		5F5D1DB91E12896F00098840 /* KLPValueSetter.h in Headers */ = {isa = PBXBuildFile; fileRef = 5F5D1DB81E12896F00098840 /* KLPValueSetter.h */; };
+		5F5D1DBC1E128AE900098840 /* KLPStandardValueSetter.h in Headers */ = {isa = PBXBuildFile; fileRef = 5F5D1DBA1E128AE900098840 /* KLPStandardValueSetter.h */; };
+		5F5D1DBD1E128AE900098840 /* KLPStandardValueSetter.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F5D1DBB1E128AE900098840 /* KLPStandardValueSetter.m */; };
+		5F5D1DBF1E12D93E00098840 /* KLPValueSetterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F5D1DBE1E12D93E00098840 /* KLPValueSetterTests.m */; };
+		5F5D1DC11E12F57E00098840 /* KLPInjectorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F5D1DC01E12F57E00098840 /* KLPInjectorTests.m */; };
 		5FAFB06E1E0335F50095CA53 /* KlappaInjector.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FAFB0641E0335F50095CA53 /* KlappaInjector.framework */; };
-		5FAFB0731E0335F50095CA53 /* KlappaInjectorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FAFB0721E0335F50095CA53 /* KlappaInjectorTests.m */; };
 		5FAFB0751E0335F50095CA53 /* KlappaInjector.h in Headers */ = {isa = PBXBuildFile; fileRef = 5FAFB0671E0335F50095CA53 /* KlappaInjector.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5FAFB0811E0336FC0095CA53 /* KLPStandardInjector.h in Headers */ = {isa = PBXBuildFile; fileRef = 5FAFB07F1E0336FC0095CA53 /* KLPStandardInjector.h */; };
+		5FAFB0821E0336FC0095CA53 /* KLPStandardInjector.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FAFB0801E0336FC0095CA53 /* KLPStandardInjector.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -23,12 +30,19 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5F5D1DB61E12876200098840 /* KLPInjector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KLPInjector.h; sourceTree = "<group>"; };
+		5F5D1DB81E12896F00098840 /* KLPValueSetter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KLPValueSetter.h; sourceTree = "<group>"; };
+		5F5D1DBA1E128AE900098840 /* KLPStandardValueSetter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KLPStandardValueSetter.h; sourceTree = "<group>"; };
+		5F5D1DBB1E128AE900098840 /* KLPStandardValueSetter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KLPStandardValueSetter.m; sourceTree = "<group>"; };
+		5F5D1DBE1E12D93E00098840 /* KLPValueSetterTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KLPValueSetterTests.m; sourceTree = "<group>"; };
+		5F5D1DC01E12F57E00098840 /* KLPInjectorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KLPInjectorTests.m; sourceTree = "<group>"; };
 		5FAFB0641E0335F50095CA53 /* KlappaInjector.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = KlappaInjector.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FAFB0671E0335F50095CA53 /* KlappaInjector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KlappaInjector.h; sourceTree = "<group>"; };
 		5FAFB0681E0335F50095CA53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5FAFB06D1E0335F50095CA53 /* KlappaInjectorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KlappaInjectorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		5FAFB0721E0335F50095CA53 /* KlappaInjectorTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KlappaInjectorTests.m; sourceTree = "<group>"; };
 		5FAFB0741E0335F50095CA53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5FAFB07F1E0336FC0095CA53 /* KLPStandardInjector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KLPStandardInjector.h; sourceTree = "<group>"; };
+		5FAFB0801E0336FC0095CA53 /* KLPStandardInjector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KLPStandardInjector.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,8 +85,14 @@
 		5FAFB0661E0335F50095CA53 /* KlappaInjector */ = {
 			isa = PBXGroup;
 			children = (
-				5FAFB0671E0335F50095CA53 /* KlappaInjector.h */,
 				5FAFB0681E0335F50095CA53 /* Info.plist */,
+				5FAFB0671E0335F50095CA53 /* KlappaInjector.h */,
+				5F5D1DB61E12876200098840 /* KLPInjector.h */,
+				5F5D1DB81E12896F00098840 /* KLPValueSetter.h */,
+				5FAFB07F1E0336FC0095CA53 /* KLPStandardInjector.h */,
+				5FAFB0801E0336FC0095CA53 /* KLPStandardInjector.m */,
+				5F5D1DBA1E128AE900098840 /* KLPStandardValueSetter.h */,
+				5F5D1DBB1E128AE900098840 /* KLPStandardValueSetter.m */,
 			);
 			path = KlappaInjector;
 			sourceTree = "<group>";
@@ -80,8 +100,9 @@
 		5FAFB0711E0335F50095CA53 /* KlappaInjectorTests */ = {
 			isa = PBXGroup;
 			children = (
-				5FAFB0721E0335F50095CA53 /* KlappaInjectorTests.m */,
 				5FAFB0741E0335F50095CA53 /* Info.plist */,
+				5F5D1DBE1E12D93E00098840 /* KLPValueSetterTests.m */,
+				5F5D1DC01E12F57E00098840 /* KLPInjectorTests.m */,
 			);
 			path = KlappaInjectorTests;
 			sourceTree = "<group>";
@@ -93,7 +114,11 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5F5D1DB71E12876200098840 /* KLPInjector.h in Headers */,
+				5FAFB0811E0336FC0095CA53 /* KLPStandardInjector.h in Headers */,
 				5FAFB0751E0335F50095CA53 /* KlappaInjector.h in Headers */,
+				5F5D1DB91E12896F00098840 /* KLPValueSetter.h in Headers */,
+				5F5D1DBC1E128AE900098840 /* KLPStandardValueSetter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -197,6 +222,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5FAFB0821E0336FC0095CA53 /* KLPStandardInjector.m in Sources */,
+				5F5D1DBD1E128AE900098840 /* KLPStandardValueSetter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -204,7 +231,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5FAFB0731E0335F50095CA53 /* KlappaInjectorTests.m in Sources */,
+				5F5D1DBF1E12D93E00098840 /* KLPValueSetterTests.m in Sources */,
+				5F5D1DC11E12F57E00098840 /* KLPInjectorTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -392,6 +420,7 @@
 				5FAFB07A1E0335F50095CA53 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		5FAFB07B1E0335F50095CA53 /* Build configuration list for PBXNativeTarget "KlappaInjectorTests" */ = {
 			isa = XCConfigurationList;
@@ -400,6 +429,7 @@
 				5FAFB07D1E0335F50095CA53 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
