@@ -60,10 +60,18 @@
 @implementation TestObject5
 @end
 
+@interface TestObject6 : UIView
+@property InjectedClass2* injectedPropertyNoLimit;
+@end
+
+@implementation TestObject6
+@end
+
 static TestObject2* object2;
 static TestObject3* object3;
 static TestObject4* object4;
 static TestObject5* object5;
+static TestObject6* object6;
 static KLPStandardInjector* injector;
 
 @interface KLPInjectorTests : XCTestCase
@@ -77,6 +85,7 @@ static KLPStandardInjector* injector;
     object3 = [[TestObject3 alloc] init];
     object4 = [[TestObject4 alloc] init];
     object5 = [[TestObject5 alloc] init];
+    object6 = [[TestObject6 alloc] init];
     injector = [[KLPStandardInjector alloc] init];
     
     InjectedClass2* class2 = [[InjectedClass2 alloc] init];
@@ -126,6 +135,12 @@ static KLPStandardInjector* injector;
     
     XCTAssertNotNil(object5.injectedPropertyNoLimit);
     XCTAssertNotNil(object5.injectedPropertyLimited);
+}
+
+- (void) testShouldSetPropertiesOnViewDescendant {
+    [injector inject:object6];
+    
+    XCTAssertNotNil(object6.injectedPropertyNoLimit);
 }
 
 /*

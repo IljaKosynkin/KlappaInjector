@@ -46,14 +46,16 @@ static NSString* prefix = @"injected";
         objc_property_t property = props[i];
         
         NSString * name = [NSString stringWithUTF8String: property_getName(property)];
-        NSString * type = [NSString stringWithUTF8String: property_getAttributes(property)];
+        if ([name hasPrefix:prefix]) {
+            NSString * type = [NSString stringWithUTF8String: property_getAttributes(property)];
         
-        NSArray * attributes = [type componentsSeparatedByString:@"\""];
-        NSString * parsedType = [attributes objectAtIndex:1];
-        parsedType = [[parsedType componentsSeparatedByString:@"\""] objectAtIndex:0];
+            NSArray * attributes = [type componentsSeparatedByString:@"\""];
+            NSString * parsedType = [attributes objectAtIndex:1];
+            parsedType = [[parsedType componentsSeparatedByString:@"\""] objectAtIndex:0];
         
-        [*names addObject: name];
-        [*types addObject:parsedType];
+            [*names addObject: name];
+            [*types addObject:parsedType];
+        }
     }
     
     free(props);
