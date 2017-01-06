@@ -39,12 +39,9 @@ static NSString* prefix = @"injected";
     return self;
 }
 
-+(void) getFieldsOfObject:(id)object names:(NSArray**) fieldNames types:(NSArray**) typesOfFields {
-    NSMutableArray* names = [[NSMutableArray alloc] init];
-    NSMutableArray* types = [[NSMutableArray alloc] init];
-    
++(void) getFieldsOfClass:(Class)class names:(NSMutableArray**) names types:(NSMutableArray**) types {
     unsigned int count;
-    objc_property_t* props = class_copyPropertyList([object class], &count);
+    objc_property_t* props = class_copyPropertyList(class, &count);
     for (int i = 0; i < count; i++) {
         objc_property_t property = props[i];
         
@@ -55,14 +52,31 @@ static NSString* prefix = @"injected";
         NSString * parsedType = [attributes objectAtIndex:1];
         parsedType = [[parsedType componentsSeparatedByString:@"\""] objectAtIndex:0];
         
-        [names addObject: name];
-        [types addObject:parsedType];
+        [*names addObject: name];
+        [*types addObject:parsedType];
     }
     
     free(props);
+}
+
++(void) getFieldsOfObject:(id)object names:(NSArray**) fieldNames types:(NSArray**) typesOfFields objectTypes:(NSArray**) objectTypes {
+    NSMutableArray* names = [[NSMutableArray alloc] init];
+    NSMutableArray* types = [[NSMutableArray alloc] init];
+    NSMutableArray* objTypes = [[NSMutableArray alloc] init];
+    
+    Class currentClass = [object class];
+    while (YES) {
+        [objTypes addObject:currentClass];
+        [KLPStandardInjector getFieldsOfClass:currentClass names:&names types:&types];
+        currentClass = [currentClass superclass];
+        if (currentClass == [NSObject class]) {
+            break;
+        }
+    }
     
     *fieldNames = names;
     *typesOfFields = types;
+    *objectTypes = objTypes;
 }
 
 - (NSString*) getIdFromKey:(NSString*)key {
@@ -71,8 +85,8 @@ static NSString* prefix = @"injected";
 }
 
 - (void)inject:(id)into {
-    NSArray* names, *types;
-    [KLPStandardInjector getFieldsOfObject:into names:&names types:&types];
+    NSArray* names, *types, *objectTypes;
+    [KLPStandardInjector getFieldsOfObject:into names:&names types:&types objectTypes:&objectTypes];
     
     for (NSUInteger i = 0; i < [names count]; i++) {
         NSString* name = [names objectAtIndex:i];
@@ -80,7 +94,6 @@ static NSString* prefix = @"injected";
         
         if ([name hasPrefix:prefix]) {
             NSString* minimalKey = type;
-            NSString* extendedKey = [type stringByAppendingString:NSStringFromClass([into class])];
             
             BOOL skip = NO;
             for (NSString* key in registeredObjects) {
@@ -96,9 +109,21 @@ static NSString* prefix = @"injected";
                 continue;
             }
             
-            if (registeredObjects[extendedKey] != nil) {
-                [valueSetter setValue:into forValue:registeredObjects[extendedKey] forKey:name];
-            } else if (registeredObjects[minimalKey] != nil) {
+            for (NSUInteger j = 0; j < [objectTypes count]; j++) {
+                Class currentClass = [objectTypes objectAtIndex:j];
+                NSString* extendedKey = [type stringByAppendingString:NSStringFromClass(currentClass)];
+                if (registeredObjects[extendedKey] != nil) {
+                    [valueSetter setValue:into forValue:registeredObjects[extendedKey] forKey:name];
+                    skip = YES;
+                    break;
+                }
+            }
+            
+            if (skip) {
+                continue;
+            }
+            
+            if (registeredObjects[minimalKey] != nil) {
                 [valueSetter setValue:into forValue:registeredObjects[minimalKey] forKey:name];
             } else {
                 @throw [NSException

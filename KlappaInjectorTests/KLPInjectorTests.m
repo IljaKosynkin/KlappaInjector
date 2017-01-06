@@ -14,9 +14,6 @@
 @end
 
 @implementation InjectedClass2
-+ (NSString*) getType {
-    return NSStringFromClass([InjectedClass2 class]);
-}
 @end
 
 @interface InjectedClass3 : NSObject
@@ -24,9 +21,6 @@
 @end
 
 @implementation InjectedClass3
-+ (NSString*) getType {
-    return NSStringFromClass([InjectedClass3 class]);
-}
 @end
 
 @interface InjectedClass4 : NSObject
@@ -34,9 +28,6 @@
 @end
 
 @implementation InjectedClass4
-+ (NSString*) getType {
-    return NSStringFromClass([InjectedClass4 class]);
-}
 @end
 
 @interface TestObject2 : NSObject
@@ -63,9 +54,16 @@
 @implementation TestObject4
 @end
 
+@interface TestObject5 : TestObject2
+@end
+
+@implementation TestObject5
+@end
+
 static TestObject2* object2;
 static TestObject3* object3;
 static TestObject4* object4;
+static TestObject5* object5;
 static KLPStandardInjector* injector;
 
 @interface KLPInjectorTests : XCTestCase
@@ -78,6 +76,7 @@ static KLPStandardInjector* injector;
     object2 = [[TestObject2 alloc] init];
     object3 = [[TestObject3 alloc] init];
     object4 = [[TestObject4 alloc] init];
+    object5 = [[TestObject5 alloc] init];
     injector = [[KLPStandardInjector alloc] init];
     
     InjectedClass2* class2 = [[InjectedClass2 alloc] init];
@@ -117,6 +116,19 @@ static KLPStandardInjector* injector;
     XCTAssertNotNil(object3.injectedPropertySecond);
 }
 
+
+- (void) testShouldThrowOnInjectionToUnregisteredObject {
+    XCTAssertThrows([injector inject:object4]);
+}
+
+- (void) testShouldSetAncestorProperties {
+    [injector inject:object5];
+    
+    XCTAssertNotNil(object5.injectedPropertyNoLimit);
+    XCTAssertNotNil(object5.injectedPropertyLimited);
+}
+
+/*
 - (void)testStraightAssignement {
     InjectedClass2* class2 = [[InjectedClass2 alloc] init];
     InjectedClass3* class3 = [[InjectedClass3 alloc] init];
@@ -129,10 +141,6 @@ static KLPStandardInjector* injector;
     }];
 }
 
-- (void) testShouldThrowOnInjectionToUnregisteredObject {
-    XCTAssertThrows([injector inject:object4]);
-}
-
 - (void) testInjection {
     [self measureBlock:^{
         for (int i = 0; i < 10000; i++) {
@@ -140,5 +148,6 @@ static KLPStandardInjector* injector;
         }
     }];
 }
+*/
 
 @end
