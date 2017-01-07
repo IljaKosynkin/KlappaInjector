@@ -45,22 +45,34 @@ static NSString* prefix = @"injected";
             break;
         }
     }
-
+    
     
     if (explicitRegistration) {
         unsigned count;
         __unsafe_unretained Protocol **pl = class_copyProtocolList([object class], &count);
-    
+        
         for (unsigned i = 0; i < count; i++) {
             NSString* protocolName = [NSString stringWithUTF8String: protocol_getName(pl[i])];
             NSString* key = [[protocolName stringByAppendingString: typeString] stringByAppendingString: [KLPStandardInjector getPostfixWithId:identifier]];
             registeredObjects[key] = object;
         }
-    
+        
         free(pl);
     }
     
     return self;
+}
+
++(NSString*) extractSwiftRepresentation:(NSString*) type {
+    NSString* projectName = [NSString stringWithUTF8String:getprogname()];
+    NSString* secondPart = [[projectName componentsSeparatedByString:projectName] objectAtIndex:1];
+    
+    NSRegularExpression* classOffset = [NSRegularExpression regularExpressionWithPattern:@"(d+).*" options:NSRegularExpressionCaseInsensitive error:nil];
+    NSTextCheckingResult *result = [classOffset firstMatchInString:secondPart options:NSMatchingReportCompletion range:NSMakeRange(0, secondPart.length)];
+    NSString* number = [secondPart substringWithRange:[result rangeAtIndex:1]];
+    int parsed = [number intValue];
+    NSString* className = [secondPart substringWithRange:NSMakeRange([number length], [number length] + parsed)];
+    return [[projectName stringByAppendingString:@"."] stringByAppendingString:className];
 }
 
 +(void) getFieldsOfClass:(Class)class names:(NSMutableArray**) names types:(NSMutableArray**) types {
@@ -73,7 +85,7 @@ static NSString* prefix = @"injected";
         NSString * name = [NSString stringWithUTF8String: property_getName(property)];
         if ([name hasPrefix:prefix]) {
             NSString * type = [NSString stringWithUTF8String: property_getAttributes(property)];
-        
+            
             NSArray * attributes = [type componentsSeparatedByString:@"\""];
             NSString * parsedType = [attributes objectAtIndex:1];
             parsedType = [[parsedType componentsSeparatedByString:@"\""] objectAtIndex:0];
@@ -83,7 +95,11 @@ static NSString* prefix = @"injected";
             if ([result numberOfRanges] > 0) {
                 parsedType = [parsedType substringWithRange:[result rangeAtIndex:1]];
             }
-        
+            
+            #ifdef SWIFT
+                parsedType = [KLPStandardInjector extractSwiftRepresentation:parsedType];
+            #endif
+            
             [*names addObject:name];
             [*types addObject:parsedType];
         }
