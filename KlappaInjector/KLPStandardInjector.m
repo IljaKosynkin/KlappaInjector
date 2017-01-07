@@ -65,13 +65,13 @@ static NSString* prefix = @"injected";
 
 +(NSString*) extractSwiftRepresentation:(NSString*) type {
     NSString* projectName = [NSString stringWithUTF8String:getprogname()];
-    NSString* secondPart = [[projectName componentsSeparatedByString:projectName] objectAtIndex:1];
+    NSString* secondPart = [[type componentsSeparatedByString:projectName] objectAtIndex:1];
     
-    NSRegularExpression* classOffset = [NSRegularExpression regularExpressionWithPattern:@"(d+).*" options:NSRegularExpressionCaseInsensitive error:nil];
+    NSRegularExpression* classOffset = [NSRegularExpression regularExpressionWithPattern:@"([0-9]+).*" options:NSRegularExpressionCaseInsensitive error:nil];
     NSTextCheckingResult *result = [classOffset firstMatchInString:secondPart options:NSMatchingReportCompletion range:NSMakeRange(0, secondPart.length)];
     NSString* number = [secondPart substringWithRange:[result rangeAtIndex:1]];
     int parsed = [number intValue];
-    NSString* className = [secondPart substringWithRange:NSMakeRange([number length], [number length] + parsed)];
+    NSString* className = [secondPart substringWithRange:NSMakeRange([number length], [number length] + parsed - 1)];
     return [[projectName stringByAppendingString:@"."] stringByAppendingString:className];
 }
 
@@ -96,9 +96,9 @@ static NSString* prefix = @"injected";
                 parsedType = [parsedType substringWithRange:[result rangeAtIndex:1]];
             }
             
-            #ifdef SWIFT
+            if ([parsedType hasPrefix:@"_Tt"]) {
                 parsedType = [KLPStandardInjector extractSwiftRepresentation:parsedType];
-            #endif
+            }
             
             [*names addObject:name];
             [*types addObject:parsedType];
