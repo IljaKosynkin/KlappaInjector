@@ -57,6 +57,7 @@
 		5FAFB0741E0335F50095CA53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5FAFB07F1E0336FC0095CA53 /* KLPStandardInjector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KLPStandardInjector.h; sourceTree = "<group>"; };
 		5FAFB0801E0336FC0095CA53 /* KLPStandardInjector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KLPStandardInjector.m; sourceTree = "<group>"; };
+		5FFB53361E21246B007E82B0 /* KLPInjectorTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KLPInjectorTests.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +117,7 @@
 			children = (
 				5FAFB0741E0335F50095CA53 /* Info.plist */,
 				5F5D1DBE1E12D93E00098840 /* KLPValueSetterTests.m */,
+				5FFB53361E21246B007E82B0 /* KLPInjectorTests.h */,
 				5F5D1DC01E12F57E00098840 /* KLPInjectorTests.m */,
 			);
 			path = KlappaInjectorTests;
@@ -463,6 +465,7 @@
 				5F00C1501E1EEF06008D0DF9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		5FAFB05E1E0335F50095CA53 /* Build configuration list for PBXProject "KlappaInjector" */ = {
 			isa = XCConfigurationList;

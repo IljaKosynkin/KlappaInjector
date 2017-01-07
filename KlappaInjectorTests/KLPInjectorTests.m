@@ -7,72 +7,8 @@
 //
 
 #import <XCTest/XCTest.h>
-#import "KLPStandardInjector.h"
+#import "KLPInjectorTests.h"
 
-@interface InjectedClass2 : NSObject
-
-@end
-
-@implementation InjectedClass2
-@end
-
-@interface InjectedClass3 : NSObject
-
-@end
-
-@implementation InjectedClass3
-@end
-
-@interface InjectedClass4 : NSObject
-
-@end
-
-@implementation InjectedClass4
-@end
-
-@interface TestObject2 : NSObject
-@property InjectedClass2* injectedPropertyNoLimit;
-@property InjectedClass3* injectedPropertyLimited;
-@end
-
-@implementation TestObject2
-@end
-
-@interface TestObject3 : NSObject
-@property InjectedClass2* injectedPropertyNoLimit;
-@property InjectedClass4* injectedPropertyFirst;
-@property InjectedClass4* injectedPropertySecond;
-@end
-
-@implementation TestObject3
-@end
-
-@interface TestObject4 : NSObject
-@property InjectedClass3* injectedPropertyLimited;
-@end
-
-@implementation TestObject4
-@end
-
-@interface TestObject5 : TestObject2
-@end
-
-@implementation TestObject5
-@end
-
-@interface TestObject6 : UIView
-@property InjectedClass2* injectedPropertyNoLimit;
-@end
-
-@implementation TestObject6
-@end
-
-static TestObject2* object2;
-static TestObject3* object3;
-static TestObject4* object4;
-static TestObject5* object5;
-static TestObject6* object6;
-static KLPStandardInjector* injector;
 
 @interface KLPInjectorTests : XCTestCase
 
@@ -86,20 +22,24 @@ static KLPStandardInjector* injector;
     object4 = [[TestObject4 alloc] init];
     object5 = [[TestObject5 alloc] init];
     object6 = [[TestObject6 alloc] init];
+    object7 = [[TestObject7 alloc] init];
+    
     injector = [[KLPStandardInjector alloc] init];
     
     InjectedClass2* class2 = [[InjectedClass2 alloc] init];
     InjectedClass3* class3 = [[InjectedClass3 alloc] init];
     InjectedClass4* class41 = [[InjectedClass4 alloc] init];
     InjectedClass4* class42 = [[InjectedClass4 alloc] init];
+    InjectedClass5* class5 = [[InjectedClass5 alloc] init];
     
     Class testClass2 = [TestObject2 class];
     Class testClass3 = [TestObject3 class];
     
-    [injector registerInjectable:class2 forType:nil withId:nil];
-    [injector registerInjectable:class3 forType:&testClass2 withId:nil];
-    [injector registerInjectable:class41 forType:&testClass3 withId:@"first"];
-    [injector registerInjectable:class42 forType:&testClass3 withId:@"second"];
+    [injector registerInjectable:class2 forType:nil withId:nil explicitRegistration:YES];
+    [injector registerInjectable:class5 forType:nil withId:nil explicitRegistration:YES];
+    [injector registerInjectable:class3 forType:&testClass2 withId:nil explicitRegistration:YES];
+    [injector registerInjectable:class41 forType:&testClass3 withId:@"first" explicitRegistration:YES];
+    [injector registerInjectable:class42 forType:&testClass3 withId:@"second" explicitRegistration:YES];
 }
 
 - (void) setUp {
@@ -109,6 +49,16 @@ static KLPStandardInjector* injector;
     object3.injectedPropertyFirst = nil;
     object3.injectedPropertySecond = nil;
     object3.injectedPropertyNoLimit = nil;
+    
+    object4.injectedPropertyLimited = nil;
+    
+    object5.injectedPropertyLimited = nil;
+    object5.injectedPropertyNoLimit = nil;
+    
+    object6.injectedPropertyNoLimit = nil;
+    
+    object7.injectedPropertyProtocol = nil;
+    object7.injectedPropertyBaseClass = nil;
 }
 
 - (void) testShouldSetPropertyWithNoLimit {
@@ -141,6 +91,13 @@ static KLPStandardInjector* injector;
     [injector inject:object6];
     
     XCTAssertNotNil(object6.injectedPropertyNoLimit);
+}
+
+- (void) testShouldSetToProtocolFieldAndBaseClass {
+    [injector inject:object7];
+    
+    XCTAssertNotNil(object7.injectedPropertyProtocol);
+    XCTAssertNotNil(object7.injectedPropertyBaseClass);
 }
 
 /*

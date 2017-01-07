@@ -32,15 +32,40 @@ static NSString* prefix = @"injected";
     return identifier != nil ? [separator stringByAppendingString: identifier] : @"";
 }
 
-- (id<KLPInjector>)registerInjectable:(id)object forType:(Class*)type withId:(NSString*)identifier {
+- (id<KLPInjector>)registerInjectable:(id)object forType:(Class*)type withId:(NSString*)identifier explicitRegistration:(BOOL)explicitRegistration {
     NSString* typeString = type != nil ? NSStringFromClass(*type) : @"";
-    NSString* key = [[NSStringFromClass([object class]) stringByAppendingString: typeString] stringByAppendingString: [KLPStandardInjector getPostfixWithId:identifier]];
-    registeredObjects[key] = object;
+    NSString* postfix = [KLPStandardInjector getPostfixWithId:identifier];
+    
+    Class currentClass = [object class];
+    while (YES) {
+        NSString* key = [[NSStringFromClass(currentClass) stringByAppendingString: typeString] stringByAppendingString: postfix];
+        registeredObjects[key] = object;
+        currentClass = [currentClass superclass];
+        if (currentClass == [NSObject class] || !explicitRegistration) {
+            break;
+        }
+    }
+
+    
+    if (explicitRegistration) {
+        unsigned count;
+        __unsafe_unretained Protocol **pl = class_copyProtocolList([object class], &count);
+    
+        for (unsigned i = 0; i < count; i++) {
+            NSString* protocolName = [NSString stringWithUTF8String: protocol_getName(pl[i])];
+            NSString* key = [[protocolName stringByAppendingString: typeString] stringByAppendingString: [KLPStandardInjector getPostfixWithId:identifier]];
+            registeredObjects[key] = object;
+        }
+    
+        free(pl);
+    }
+    
     return self;
 }
 
 +(void) getFieldsOfClass:(Class)class names:(NSMutableArray**) names types:(NSMutableArray**) types {
     unsigned int count;
+    
     objc_property_t* props = class_copyPropertyList(class, &count);
     for (int i = 0; i < count; i++) {
         objc_property_t property = props[i];
@@ -52,8 +77,14 @@ static NSString* prefix = @"injected";
             NSArray * attributes = [type componentsSeparatedByString:@"\""];
             NSString * parsedType = [attributes objectAtIndex:1];
             parsedType = [[parsedType componentsSeparatedByString:@"\""] objectAtIndex:0];
+            
+            NSRegularExpression* protocolCheck = [NSRegularExpression regularExpressionWithPattern:@".*<(.*)>.*" options:NSRegularExpressionCaseInsensitive error:nil];
+            NSTextCheckingResult *result = [protocolCheck firstMatchInString:parsedType options:NSMatchingReportCompletion range:NSMakeRange(0, parsedType.length)];
+            if ([result numberOfRanges] > 0) {
+                parsedType = [parsedType substringWithRange:[result rangeAtIndex:1]];
+            }
         
-            [*names addObject: name];
+            [*names addObject:name];
             [*types addObject:parsedType];
         }
     }
