@@ -9,7 +9,7 @@
 #import "KLPStandardInjector.h"
 #import <objc/runtime.h>
 
-static NSString* separator = @"_";
+static NSString* separator = @"|%$^|";
 static NSString* prefix = @"injected";
 
 @implementation KLPStandardInjector {
