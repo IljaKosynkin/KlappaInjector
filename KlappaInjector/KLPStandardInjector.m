@@ -65,13 +65,23 @@ static NSString* prefix = @"injected";
 
 +(NSString*) extractSwiftRepresentation:(NSString*) type {
     NSString* projectName = [NSString stringWithUTF8String:getprogname()];
-    NSString* secondPart = [[type componentsSeparatedByString:projectName] objectAtIndex:1];
+    NSRange range = [type rangeOfString:projectName];
+    NSString* secondPart = [type substringFromIndex:range.location + range.length];
+    NSRange projectOccurence = [secondPart rangeOfString:projectName];
     
-    NSRegularExpression* classOffset = [NSRegularExpression regularExpressionWithPattern:@"([0-9]+).*" options:NSRegularExpressionCaseInsensitive error:nil];
-    NSTextCheckingResult *result = [classOffset firstMatchInString:secondPart options:NSMatchingReportCompletion range:NSMakeRange(0, secondPart.length)];
-    NSString* number = [secondPart substringWithRange:[result rangeAtIndex:1]];
-    int parsed = [number intValue];
-    NSString* className = [secondPart substringWithRange:NSMakeRange([number length], [number length] + parsed - 1)];
+    NSString* stringWithNumber;
+    if (projectOccurence.location != NSNotFound) {
+        stringWithNumber = [secondPart substringToIndex:projectOccurence.location];
+    } else {
+        stringWithNumber = secondPart;
+    }
+    
+    NSRegularExpression* regex = [NSRegularExpression regularExpressionWithPattern:@"([0-9]+).*"                                                                           options:0 error:NULL];
+    NSTextCheckingResult* match = [regex firstMatchInString:stringWithNumber options:0 range:NSMakeRange(0, [stringWithNumber length])];
+    NSString* extractedNumber = [stringWithNumber substringWithRange:[match rangeAtIndex:1]];
+    int parsedValue = [extractedNumber intValue];
+    
+    NSString* className = [secondPart substringWithRange:NSMakeRange([extractedNumber length], parsedValue)];
     return [[projectName stringByAppendingString:@"."] stringByAppendingString:className];
 }
 
