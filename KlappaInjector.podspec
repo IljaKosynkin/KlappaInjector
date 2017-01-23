@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "KlappaInjector"
-  s.version      = "1.0.5"
+  s.version      = "1.0.6"
   s.summary      = "Lightweight library for dependency injection using KVC and ObjC-Runtime"
 
   s.description  = <<-DESC
@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
 
   s.author             = { "Ilia Kosynkin" => "ilja.kosynkin@gmail.com" }
 
-  s.source       = { :git => "https://github.com/IljaKosynkin/KlappaInjector.git", :tag => "v1.0.5" }
+  s.source       = { :git => "https://github.com/IljaKosynkin/KlappaInjector.git", :tag => "v1.0.6" }
 
   s.source_files  = "KlappaInjector", "KlappaInjector/*.{h,m}"
   s.exclude_files = "Classes/Exclude"
