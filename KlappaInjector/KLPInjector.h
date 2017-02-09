@@ -10,10 +10,14 @@
 #define KLPInjector_h
 
 #import <Foundation/Foundation.h>
+#import "KLPDependencyGraph.h"
 
 @protocol KLPInjector <NSObject>
-- (id<KLPInjector>)registerInjectable:(id)object forType:(Class*)type withId:(NSString*)identifier explicitRegistration:(BOOL)explicitRegistration;
+- (id<KLPInjector>)registerInjectable:(id)object forType:(Class*) type withId:(NSString*) identifier explicitRegistration:(BOOL) explicitRegistration;
 - (void)inject:(id)into;
+- (void) setDependencyTracking:(BOOL) active forClass:(Class) objectType explicit:(BOOL) explicitTracking;
+- (void) setDependencyGraph:(id<KLPDependencyGraph>) graph;
+- (void) reinjectObjectIntoDependentObjects:(Class) objectType explicitReinjection:(BOOL) explicitReinjection;
 @end
 
 #endif
