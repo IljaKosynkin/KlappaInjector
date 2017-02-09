@@ -71,18 +71,24 @@ static NSString* prefix = @"injected";
 }
 
 +(NSString*) extractSwiftRepresentation:(NSString*) type {
-    NSString* regString = @"_Tt.[0-9]+(.+)[0-9]+(.+)";
-    NSRegularExpression* extraction = [NSRegularExpression regularExpressionWithPattern:regString options:0 error:NULL];
+    NSString* projectName = [NSString stringWithUTF8String:getprogname()];
+    NSRange range = [type rangeOfString:projectName];
+    NSString* secondPart = [type substringFromIndex:range.location + range.length];
+    NSRange projectOccurence = [secondPart rangeOfString:projectName];
     
-    NSArray* matches = [extraction matchesInString:type options:0 range:NSMakeRange(0, [type length])];
-    NSTextCheckingResult* matchesResult = [matches objectAtIndex:0];
+    NSString* stringWithNumber;
+    if (projectOccurence.location != NSNotFound) {
+        stringWithNumber = [secondPart substringToIndex:projectOccurence.location];
+    } else {
+        stringWithNumber = secondPart;
+    }
     
-    NSRange nameRange = [matchesResult rangeAtIndex:1];
-    NSRange classRange = [matchesResult rangeAtIndex:2];
+    NSRegularExpression* regex = [NSRegularExpression regularExpressionWithPattern:@"([0-9]+).*"                                                                           options:0 error:NULL];
+    NSTextCheckingResult* match = [regex firstMatchInString:stringWithNumber options:0 range:NSMakeRange(0, [stringWithNumber length])];
+    NSString* extractedNumber = [stringWithNumber substringWithRange:[match rangeAtIndex:1]];
+    int parsedValue = [extractedNumber intValue];
     
-    NSString* projectName = [type substringWithRange:nameRange];
-    NSString* className = [type substringWithRange:classRange];
-    
+    NSString* className = [secondPart substringWithRange:NSMakeRange([extractedNumber length], parsedValue)];
     return [[projectName stringByAppendingString:@"."] stringByAppendingString:className];
 }
 

@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "KLPDependencyGraph.h"
 
-static NSString* separator = @"|\\o/|";
+static NSString* separator = @"|_+_|";
 
 @interface KLPStandardDependencyGraph : NSObject<KLPDependencyGraph>
 - (void) registerDependency:(id) dependency forClass:(Class) mainClass forField:(NSString*) name;
