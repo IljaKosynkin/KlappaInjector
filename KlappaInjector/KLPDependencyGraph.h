@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @protocol KLPDependencyGraph <NSObject>
+- (void) registerObject:(id) dependentObject encodedType:(NSString*) encodedType forField:(NSString*) field;
 - (void) registerDependency:(id) dependency forClass:(Class) mainClass forField:(NSString*) name;
-- (NSDictionary*) getDependentObjects:(Class) forClass;
+- (NSArray*) getDependentObjects:(Class) forClass;
 @end

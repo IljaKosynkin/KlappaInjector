@@ -95,5 +95,7 @@ static TestObject5* object5;
 static TestObject6* object6;
 static TestObject7* object7;
 
+
+
 static KLPStandardInjector* injector;
 #endif /* KLPInjectorTests_h */

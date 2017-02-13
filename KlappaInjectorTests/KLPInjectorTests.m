@@ -8,7 +8,7 @@
 
 #import <XCTest/XCTest.h>
 #import "KLPInjectorTests.h"
-
+#import "KLPDependencyGraphTestClasses.h"
 
 @interface KLPInjectorTests : XCTestCase
 
@@ -40,6 +40,12 @@
     [injector registerInjectable:class3 forType:&testClass2 withId:nil explicitRegistration:YES];
     [injector registerInjectable:class41 forType:&testClass3 withId:@"first" explicitRegistration:YES];
     [injector registerInjectable:class42 forType:&testClass3 withId:@"second" explicitRegistration:YES];
+    
+    dependentClass = [[KLPDependentClass alloc] init];
+    
+    [injector setDependencyTracking:YES forClass:[KLPGInjectedSimpleClass class] explicit:YES];
+    [injector setDependencyTracking:YES forClass:[KLPProtocolClass class] explicit:YES];
+    [injector setDependencyTracking:YES forClass:[KLPGInjectedClass class] explicit:YES];
 }
 
 - (void) setUp {
@@ -59,6 +65,16 @@
     
     object7.injectedPropertyProtocol = nil;
     object7.injectedPropertyBaseClass = nil;
+    
+    KLPProtocolClass* protocolClass = [[KLPProtocolClass alloc] init];
+    KLPGInjectedClass* injectedClass = [[KLPGInjectedClass alloc] init];
+    KLPGInjectedSimpleClass* simpleClass = [[KLPGInjectedSimpleClass alloc] init];
+    
+    [injector registerInjectable:protocolClass forType:nil withId:nil explicitRegistration:YES];
+    [injector registerInjectable:injectedClass forType:nil withId:nil explicitRegistration:YES];
+    [injector registerInjectable:simpleClass forType:nil withId:nil explicitRegistration:YES];
+    
+    [injector inject:dependentClass];
 }
 
 - (void) testShouldSetPropertyWithNoLimit {
@@ -100,26 +116,31 @@
     XCTAssertNotNil(object7.injectedPropertyBaseClass);
 }
 
-/*
-- (void)testStraightAssignement {
-    InjectedClass2* class2 = [[InjectedClass2 alloc] init];
-    InjectedClass3* class3 = [[InjectedClass3 alloc] init];
+- (void) testShouldReinjectSimpleProperty {
+    KLPGInjectedSimpleClass* simpleClass = [[KLPGInjectedSimpleClass alloc] init];
     
-    [self measureBlock:^{
-        for (int i = 0; i < 10000; i++) {
-            object2.injectedPropertyNoLimit = class2;
-            object2.injectedPropertyLimited = class3;
-        }
-    }];
+    [injector registerInjectable:simpleClass forType:nil withId:nil explicitRegistration:YES];
+    [injector reinjectObjectIntoDependentObjects:[KLPGInjectedSimpleClass class] explicitReinjection:YES];
+    
+    XCTAssertEqual(dependentClass.injectedSimpleClass, simpleClass);
 }
 
-- (void) testInjection {
-    [self measureBlock:^{
-        for (int i = 0; i < 10000; i++) {
-            [injector inject:object2];
-        }
-    }];
+- (void) testShouldReinjectProtocolProperty {
+    KLPProtocolClass* protocolClass = [[KLPProtocolClass alloc] init];
+    
+    [injector registerInjectable:protocolClass forType:nil withId:nil explicitRegistration:YES];
+    [injector reinjectObjectIntoDependentObjects:[KLPProtocolClass class] explicitReinjection:YES];
+    
+    XCTAssertEqual(dependentClass.injectedProtocol, protocolClass);
 }
-*/
+
+- (void) testShouldReinjectDerivedProperty {
+    KLPGInjectedClass* injectedClass = [[KLPGInjectedClass alloc] init];
+    
+    [injector registerInjectable:injectedClass forType:nil withId:nil explicitRegistration:YES];
+    [injector reinjectObjectIntoDependentObjects:[KLPGInjectedClass class] explicitReinjection:YES];
+    
+    XCTAssertEqual(dependentClass.injectedBaseClass, injectedClass);
+}
 
 @end

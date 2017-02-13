@@ -7,14 +7,7 @@
 //
 
 #import "KLPStandardDependencyGraph.h"
-
-@interface KLPDependentObject : NSObject
-@property(weak) id object;
-@end
-
-@implementation KLPDependentObject
-
-@end
+#import <objc/runtime.h>
 
 @implementation KLPStandardDependencyGraph {
     NSMutableDictionary* dependentObjects;
@@ -26,52 +19,97 @@
     return self;
 }
 
+- (void) registerObject:(id) dependentObject encodedType:(NSString*) encodedType forField:(NSString*) field {
+    KLPDependentObject* dependent = [[KLPDependentObject alloc] init];
+    dependent.object = dependentObject;
+    dependent.fieldName = field;
+    
+    if (dependentObjects[encodedType] == nil) {
+        dependentObjects[encodedType] = [[NSMutableArray alloc] init];
+    }
+        
+    NSMutableArray* depObjs = dependentObjects[encodedType];
+    [depObjs addObject:dependent];
+}
+
 - (void) registerDependency:(id) dependency forClass:(Class) mainClass forField:(NSString*) name {
     Class objectClass = mainClass;
 
     KLPDependentObject* dependent = [[KLPDependentObject alloc] init];
     dependent.object = dependency;
+    dependent.fieldName = name;
     
-    NSMutableDictionary* dict = [[NSMutableDictionary alloc] init];
-    dict[name] = dependent;
+    unsigned count;
+    __unsafe_unretained Protocol **pl;
     
     do {
         NSString* key = NSStringFromClass(objectClass);
         if (dependentObjects[key] == nil) {
-            dependentObjects[key] = [[NSMutableDictionary alloc] init];
+            dependentObjects[key] = [[NSMutableArray alloc] init];
         }
         
-        dependentObjects[key][name] = dependent;
+        NSMutableArray* depObjs = dependentObjects[key];
+        [depObjs addObject:dependent];
+     
+        pl = class_copyProtocolList(objectClass, &count);
+        for (unsigned i = 0; i < count; i++) {
+            NSString* protocolName = [NSString stringWithUTF8String: protocol_getName(pl[i])];
+            if (dependentObjects[protocolName] == nil) {
+                dependentObjects[protocolName] = [[NSMutableArray alloc] init];
+            }
+            
+            NSMutableArray* depObjs = dependentObjects[protocolName];
+            [depObjs addObject:dependent];
+        }
+            
+        free(pl);
+        
         objectClass = [objectClass superclass];
     } while(objectClass != [NSObject class] && objectClass != nil);
 }
 
-- (NSDictionary*) getDependentObjects:(Class) forClass {
-    NSMutableDictionary* dict = [[NSMutableDictionary alloc] init];
+- (NSArray*) getDependentObjects:(Class) forClass {
+    NSMutableArray* objects = [[NSMutableArray alloc] init];
+    
     Class objectClass = forClass;
+    unsigned count;
+    __unsafe_unretained Protocol **pl;
     do {
         NSString* key = NSStringFromClass(objectClass);
-        NSMutableDictionary* depObjects = dependentObjects[key];
-        NSMutableArray* fieldsToRemove = [[NSMutableArray alloc]
-                                          init];
-        for (NSString* fieldName in depObjects) {
-            KLPDependentObject* depObj = depObjects[fieldName];
+        NSMutableArray* depObjects = dependentObjects[key];
+        
+        NSMutableArray* fieldsToRemove = [[NSMutableArray alloc] init];
+        for (KLPDependentObject* depObj in depObjects) {
             if (depObj.object == nil) {
-                [fieldsToRemove addObject:fieldName];
+                [fieldsToRemove addObject:depObj];
                 continue;
             }
             
-            NSString* newKey = [[key stringByAppendingString:separator] stringByAppendingString:fieldName];
-            dict[newKey] = depObj.object;
+            [objects addObject:depObj];
         }
         
-        for (NSString* fieldName in fieldsToRemove) {
-            depObjects[fieldName] = nil;
+        pl = class_copyProtocolList(objectClass, &count);
+        for (unsigned i = 0; i < count; i++) {
+            NSString* protocolName = [NSString stringWithUTF8String: protocol_getName(pl[i])];
+            NSMutableArray* depObjects = dependentObjects[protocolName];
+            
+            for (KLPDependentObject* depObj in depObjects) {
+                if (depObj.object == nil) {
+                    [fieldsToRemove addObject:depObj];
+                    continue;
+                }
+                
+                [objects addObject:depObj];
+            }
         }
+        
+        free(pl);
+        
+        [depObjects removeObjectsInArray:fieldsToRemove];
         
         objectClass = [objectClass superclass];
     } while(objectClass != [NSObject class] && objectClass != nil);
 
-    return dict;
+    return objects;
 }
 @end
