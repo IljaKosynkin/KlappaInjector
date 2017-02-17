@@ -106,6 +106,9 @@ static NSString* prefix = @"injected";
 
 - (void) getTypeAndNameFromProperty:(objc_property_t) property name:(NSString**) name type:(NSString**) type {
     *name = [NSString stringWithUTF8String: property_getName(property)];
+    if (![*name hasPrefix:prefix]) {
+        return;
+    }
     
     NSString* rawType = [NSString stringWithUTF8String: property_getAttributes(property)];
         
@@ -115,6 +118,7 @@ static NSString* prefix = @"injected";
         
     NSRegularExpression* protocolCheck = [NSRegularExpression regularExpressionWithPattern:@".*<(.*)>.*" options:NSRegularExpressionCaseInsensitive error:nil];
     NSTextCheckingResult *result = [protocolCheck firstMatchInString:parsedType options:NSMatchingReportCompletion range:NSMakeRange(0, parsedType.length)];
+    
     if ([result numberOfRanges] > 0) {
         parsedType = [parsedType substringWithRange:[result rangeAtIndex:1]];
     }
@@ -178,13 +182,13 @@ static NSString* prefix = @"injected";
         return;
     }
     
-    NSString* key;
+    NSString* key = NSStringFromClass(currentClass);
     do {
-        key = NSStringFromClass(currentClass);
         if (trackedObjects[key] != nil) {
             [dependencyGraph registerDependency:dependentObject forClass:currentClass forField:field];
         }
         currentClass = [currentClass superclass];
+        key = NSStringFromClass(currentClass);
     } while(excludedClasses[key] == nil && currentClass != nil);
 }
 
@@ -252,9 +256,8 @@ static NSString* prefix = @"injected";
 
 - (void) setDependencyTracking:(BOOL) active forClass:(Class) objectType explicit:(BOOL) explicitTracking {
     Class objectClass = [objectType class];
-    NSString* key;
+    NSString* key = NSStringFromClass(objectClass);
     do {
-        key = NSStringFromClass(objectClass);
         trackedObjects[key] = active ? [NSNumber numberWithBool:active] : nil;
         
         if (explicitTracking) {
@@ -270,6 +273,7 @@ static NSString* prefix = @"injected";
         }
         
         objectClass = [objectClass superclass];
+        key = NSStringFromClass(objectClass);
     } while(excludedClasses[key] == nil && explicitTracking && objectClass != nil);
 }
 
@@ -281,9 +285,8 @@ static NSString* prefix = @"injected";
     Class objectClass = [objectType class];
     
     NSMutableArray* objectTypes = [[NSMutableArray alloc] init];
-    NSString* key;
+    NSString* key = NSStringFromClass(objectClass);
     do {
-        key = NSStringFromClass(objectClass);
         if (trackedObjects[key] == nil) {
             objectClass = [objectClass superclass];
             continue;
@@ -291,6 +294,7 @@ static NSString* prefix = @"injected";
         
         [objectTypes addObject:objectClass];
         objectClass = [objectClass superclass];
+        key = NSStringFromClass(objectClass);
     } while(excludedClasses[key] == nil && explicitReinjection && objectClass != nil);
     
     for (Class objectType in objectTypes) {
