@@ -111,18 +111,18 @@ static NSString* prefix = @"injected";
     }
     
     NSString* rawType = [NSString stringWithUTF8String: property_getAttributes(property)];
-        
+    
     NSArray * attributes = [rawType componentsSeparatedByString:@"\""];
     NSString * parsedType = [attributes objectAtIndex:1];
     parsedType = [[parsedType componentsSeparatedByString:@"\""] objectAtIndex:0];
-        
+    
     NSRegularExpression* protocolCheck = [NSRegularExpression regularExpressionWithPattern:@".*<(.*)>.*" options:NSRegularExpressionCaseInsensitive error:nil];
     NSTextCheckingResult *result = [protocolCheck firstMatchInString:parsedType options:NSMatchingReportCompletion range:NSMakeRange(0, parsedType.length)];
     
     if ([result numberOfRanges] > 0) {
         parsedType = [parsedType substringWithRange:[result rangeAtIndex:1]];
     }
-        
+    
     if ([parsedType hasPrefix:@"_Tt"]) {
         parsedType = [self extractSwiftRepresentation:parsedType];
     }
@@ -192,7 +192,7 @@ static NSString* prefix = @"injected";
     } while(excludedClasses[key] == nil && currentClass != nil);
 }
 
-- (void) injectToProperty:(id) object type:(NSString*) type fieldName:(NSString*) name objectTypes:(NSArray*) objectTypes {
+- (void) injectToProperty:(id) object type:(NSString*) type fieldName:(NSString*) name objectTypes:(NSArray*) objectTypes updateDependecies:(BOOL) update {
     if ([name hasPrefix:prefix]) {
         NSString* minimalKey = type;
         
@@ -201,7 +201,11 @@ static NSString* prefix = @"injected";
             NSString* identifier = [self getIdFromKey:key];
             if (identifier != nil && [name localizedCaseInsensitiveContainsString:identifier]) {
                 [valueSetter setValue:object forValue:registeredObjects[key] forKey:name];
-                [self registerObject:object encodedType:type forField:name];
+                
+                if (update) {
+                    [self registerObject:object encodedType:type forField:name];
+                }
+                
                 skip = YES;
                 break;
             }
@@ -216,7 +220,10 @@ static NSString* prefix = @"injected";
             NSString* extendedKey = [type stringByAppendingString:NSStringFromClass(currentClass)];
             if (registeredObjects[extendedKey] != nil) {
                 [valueSetter setValue:object forValue:registeredObjects[extendedKey] forKey:name];
-                [self registerObject:object encodedType:type forField:name];
+                
+                if (update) {
+                    [self registerObject:object encodedType:type forField:name];
+                }
                 skip = YES;
                 break;
             }
@@ -228,7 +235,10 @@ static NSString* prefix = @"injected";
         
         if (registeredObjects[minimalKey] != nil) {
             [valueSetter setValue:object forValue:registeredObjects[minimalKey] forKey:name];
-            [self registerObject:object encodedType:type forField:name];
+            
+            if (update) {
+                [self registerObject:object encodedType:type forField:name];
+            }
         } else {
             @throw [NSException
                     exceptionWithName:@"Unknown Object"
@@ -236,7 +246,7 @@ static NSString* prefix = @"injected";
                     userInfo:nil];
         }
     }
-
+    
 }
 
 - (void) inject:(id)into {
@@ -248,7 +258,7 @@ static NSString* prefix = @"injected";
             NSString* name = [names objectAtIndex:i];
             NSString* type = [types objectAtIndex:i];
             
-            [self injectToProperty:into type:type fieldName:name objectTypes:objectTypes];
+            [self injectToProperty:into type:type fieldName:name objectTypes:objectTypes updateDependecies:YES];
         }
     }
     
@@ -301,10 +311,10 @@ static NSString* prefix = @"injected";
         NSArray* dependentObjects = [dependencyGraph getDependentObjects:objectType];
         for (KLPDependentObject* dependent in dependentObjects) {
             objc_property_t property = class_getProperty([dependent.object class], [dependent.fieldName UTF8String]);
-        
+            
             NSString* name, *type;
             [self getTypeAndNameFromProperty:property name:&name type:&type];
-            [self injectToProperty:dependent.object type:type fieldName:name objectTypes:objectTypes];
+            [self injectToProperty:dependent.object type:type fieldName:name objectTypes:objectTypes updateDependecies:NO];
         }
     }
 }
