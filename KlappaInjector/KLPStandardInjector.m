@@ -10,6 +10,7 @@
 #import <objc/runtime.h>
 #import "KLPStandardDependencyGraph.h"
 #import <UIKit/UIKit.h>
+#import "KLPPostInjectable.h"
 
 static NSString* prefix = @"injected";
 
@@ -315,6 +316,14 @@ static NSString* prefix = @"injected";
             NSString* name, *type;
             [self getTypeAndNameFromProperty:property name:&name type:&type];
             [self injectToProperty:dependent.object type:type fieldName:name objectTypes:objectTypes updateDependecies:NO];
+        }
+    }
+}
+
+- (void) postInject {
+    for (id object in registeredObjects.allValues) {
+        if ([object conformsToProtocol:@protocol(KLPPostInjectable)]) {
+            [object postInject];
         }
     }
 }

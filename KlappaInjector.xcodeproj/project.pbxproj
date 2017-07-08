@@ -37,6 +37,7 @@
 		5FAFB0751E0335F50095CA53 /* KlappaInjector.h in Headers */ = {isa = PBXBuildFile; fileRef = 5FAFB0671E0335F50095CA53 /* KlappaInjector.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5FAFB0811E0336FC0095CA53 /* KLPStandardInjector.h in Headers */ = {isa = PBXBuildFile; fileRef = 5FAFB07F1E0336FC0095CA53 /* KLPStandardInjector.h */; };
 		5FAFB0821E0336FC0095CA53 /* KLPStandardInjector.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FAFB0801E0336FC0095CA53 /* KLPStandardInjector.m */; };
+		5FF10A4A1F111D23007F44C9 /* KLPPostInjectable.h in Headers */ = {isa = PBXBuildFile; fileRef = 5FF10A491F111D23007F44C9 /* KLPPostInjectable.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +71,7 @@
 		5FAFB0741E0335F50095CA53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5FAFB07F1E0336FC0095CA53 /* KLPStandardInjector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KLPStandardInjector.h; sourceTree = "<group>"; };
 		5FAFB0801E0336FC0095CA53 /* KLPStandardInjector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KLPStandardInjector.m; sourceTree = "<group>"; };
+		5FF10A491F111D23007F44C9 /* KLPPostInjectable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KLPPostInjectable.h; sourceTree = "<group>"; };
 		5FFB53361E21246B007E82B0 /* KLPInjectorTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KLPInjectorTests.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -126,6 +128,7 @@
 				5F062D121E474CC700DD8C4C /* KLPStandardDependencyGraph.m */,
 				5F0458691E4E1A86009138D0 /* KLPDependentObject.h */,
 				5F04586A1E4E1A86009138D0 /* KLPDependentObject.m */,
+				5FF10A491F111D23007F44C9 /* KLPPostInjectable.h */,
 			);
 			path = KlappaInjector;
 			sourceTree = "<group>";
@@ -154,6 +157,7 @@
 				5F062D131E474CC700DD8C4C /* KLPStandardDependencyGraph.h in Headers */,
 				5F5D1DB71E12876200098840 /* KLPInjector.h in Headers */,
 				5FAFB0811E0336FC0095CA53 /* KLPStandardInjector.h in Headers */,
+				5FF10A4A1F111D23007F44C9 /* KLPPostInjectable.h in Headers */,
 				5FAFB0751E0335F50095CA53 /* KlappaInjector.h in Headers */,
 				5F5D1DB91E12896F00098840 /* KLPValueSetter.h in Headers */,
 				5F5D1DBC1E128AE900098840 /* KLPStandardValueSetter.h in Headers */,

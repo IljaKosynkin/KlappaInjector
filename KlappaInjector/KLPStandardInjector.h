@@ -26,6 +26,7 @@
 - (void) setDependencyTracking:(BOOL) active forClass:(Class) objectType explicit:(BOOL) explicitTracking;
 
 - (void) reinjectObjectIntoDependentObjects:(Class) objectType explicitReinjection:(BOOL) explicitReinjection;
+- (void) postInject;
 @end
 
 #endif
