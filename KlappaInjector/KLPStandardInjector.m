@@ -327,4 +327,9 @@ static NSString* prefix = @"injected";
         }
     }
 }
+
+- (void) flush {
+    self->registeredObjects = nil;
+    self->trackedObjects = nil;
+}
 @end

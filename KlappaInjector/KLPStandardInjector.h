@@ -27,6 +27,7 @@
 
 - (void) reinjectObjectIntoDependentObjects:(Class) objectType explicitReinjection:(BOOL) explicitReinjection;
 - (void) postInject;
+- (void) flush;
 @end
 
 #endif

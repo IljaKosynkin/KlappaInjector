@@ -13,11 +13,18 @@
 #import "KLPDependencyGraph.h"
 
 @protocol KLPInjector <NSObject>
-- (id<KLPInjector>)registerInjectable:(id)object forType:(Class*) type withId:(NSString*) identifier explicitRegistration:(BOOL) explicitRegistration;
 - (void)inject:(id)into;
-- (void) setDependencyTracking:(BOOL) active forClass:(Class) objectType explicit:(BOOL) explicitTracking;
+- (id<KLPInjector>)registerInjectable:(id)object forType:(Class*)type withId:(NSString*)identifier explicitRegistration:(BOOL)explicitRegistration;
+
+- (void) addExcludedClass:(Class) excluded;
+
+- (void) setValueSetter:(id<KLPValueSetter>)setter;
 - (void) setDependencyGraph:(id<KLPDependencyGraph>) graph;
+- (void) setDependencyTracking:(BOOL) active forClass:(Class) objectType explicit:(BOOL) explicitTracking;
+
 - (void) reinjectObjectIntoDependentObjects:(Class) objectType explicitReinjection:(BOOL) explicitReinjection;
+- (void) postInject;
+- (void) flush;
 @end
 
 #endif
