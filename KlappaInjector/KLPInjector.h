@@ -11,6 +11,7 @@
 
 #import <Foundation/Foundation.h>
 #import "KLPDependencyGraph.h"
+#import "KLPValueSetter.h"
 
 @protocol KLPInjector <NSObject>
 - (void)inject:(id)into;
